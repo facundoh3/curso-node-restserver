@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const { dbConnection } = require('../database/config');
 class Server {
 	constructor() {
 		this.app = express();
@@ -7,26 +8,34 @@ class Server {
 		this.PUERTO = process.env.PORT || 3000;
 
 		this.usuariosPath = '/api/usuarios';
-		
-		//*Middlewares (funciones que siempre se van a ejecutar cuando levante el server)
 
+		//*CONECTAR A BASE DE DATOS
+		this.conectarDB();
+
+		//* CREACION DE MIDDLEWARES (FUNCIONES QUE SE VAN A EJECUTAR CUANDO SE LEVANTE EL SERVIDOR)
 		this.middlewares();
-		//*rutas de mi app
-		
+
+		//*PARA CONFIGURAR LAS RUTAS DE MI APP
 		this.routes();
 	}
+
+	async conectarDB() {
+		await dbConnection();
+	}
+
+
 	middlewares() {
-		//*Directorio publico
+		//*DIRECTORIO PUBLICO
 		this.app.use(express.static('public'));
 
 		//*CORS
 		this.app.use(cors());
 
-		//*Parseo y lectura del body
+		//*LECTURA DEL BODY EN FORMATO JSON
 		this.app.use(express.json());
 	}
 	routes() {
-		//*Aca los esto declarando como routers
+		//*LOS DECLARO COMO ROUTERS
 
 		this.app.use(this.usuariosPath, require('../routes/usuarios.routes'));
 		// this.app.get('/',(res,req)=>{
