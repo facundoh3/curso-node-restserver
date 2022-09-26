@@ -7,18 +7,16 @@ const usuariosGet = async (req = request, res = response) => {
 
 	const { limite = 5, desde = 0 } = req.query;
 
-	const query={estado:true}
+	const query = { estado: true };
 
-	const [total,usuarios]=await Promise.all([
+	const [total, usuarios] = await Promise.all([
 		Usuario.countDocuments(query),
-		Usuario.find(query)
-			.skip(Number(desde))
-			.limit(Number(limite))
-	])	
+		Usuario.find(query).skip(Number(desde)).limit(Number(limite)),
+	]);
 	res.json({
 		msg: 'get API-controlador',
 		total,
-		usuarios
+		usuarios,
 	});
 };
 
@@ -32,7 +30,7 @@ const usuariosPut = async (req = request, res = response) => {
 	//VALIDAR CONTRA BASE DE DATOS
 	if (password) {
 		//Encriptar contraseña
-		const salt = bcryptjs.genSaltSync(); 
+		const salt = bcryptjs.genSaltSync();
 		resto.password = bcryptjs.hashSync(password, salt);
 	}
 
@@ -70,15 +68,19 @@ const usuariosPost = async (req = request, res = response) => {
 	});
 };
 
-const usuariosDelete = async(req = request, res = response) => {
-	const{id}=req.params
-
+const usuariosDelete = async (req = request, res = response) => {
+	const { id } = req.params;
+	// const uid=req.uid
 	//Fisicamente lo borramos
 	// const usuario=await Usuario.findByIdAndDelete(id);
-	const usuario = await Usuario.findByIdAndUpdate(id,{estado:false})
+	//A su estado lo ponemos en false
+	const usuario = await Usuario.findByIdAndUpdate(id, { estado: false });
+	const usuarioAutenticado = req.usuario;
+
 	res.json({
 		msg: 'delete API',
-		usuario
+		usuario,
+		usuarioAutenticado,
 	});
 };
 

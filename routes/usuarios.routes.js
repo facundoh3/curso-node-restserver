@@ -1,10 +1,18 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const { validarCampos } = require('../middlewares/validar-campos');
 const { esRoleValido, emailExiste,existeUsuarioPorId} = require('../helpers/db-validators');
+const{validarCampos,validarJWT,esAdminRole,tieneRole}=require('../middlewares')
+//Lo que hice aca arriba fue en la carpeta middlewares sacar las funciones de las constantes que estan en index
+// que a mi me parecian lo de abajo es el antes lo de arriba es el despues 
+
+// const { validarCampos } = require('../middlewares/validar-campos');
+// const {validarJWT} = require('../middlewares/validar-jwt');
+// const { esAdminRole,tieneRole } = require('../middlewares/validar-roles');
+
 
 const router = Router();
+
 const {
 	usuariosGet,
 	usuariosPut,
@@ -39,6 +47,9 @@ router.post(
 );
 
 router.delete('/:id',[
+	validarJWT,
+	tieneRole('ADMIN_ROLE','USER_ROLE'),
+	// esAdminRole, fuerza que tenga que ser admin si o si 
 	check('id','No es un ID valido').isMongoId(),
 	check('id').custom(existeUsuarioPorId),
 	validarCampos

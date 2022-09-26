@@ -6,7 +6,8 @@ class Server {
 		this.app = express();
 
 		this.PUERTO = process.env.PORT || 3000;
-
+		
+		this.authPath = '/api/auth';
 		this.usuariosPath = '/api/usuarios';
 
 		//*CONECTAR A BASE DE DATOS
@@ -23,7 +24,6 @@ class Server {
 		await dbConnection();
 	}
 
-
 	middlewares() {
 		//*DIRECTORIO PUBLICO
 		this.app.use(express.static('public'));
@@ -36,7 +36,7 @@ class Server {
 	}
 	routes() {
 		//*LOS DECLARO COMO ROUTERS
-
+		this.app.use(this.authPath, require('../routes/auth.routes'));
 		this.app.use(this.usuariosPath, require('../routes/usuarios.routes'));
 		// this.app.get('/',(res,req)=>{
 		//la ruta principal es lo que esta en el index
