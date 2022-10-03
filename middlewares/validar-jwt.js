@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
 const { request, response } = require('express');
 const Usuario=require('../models/usuario');
-const { findById } = require('../models/usuario');
+
 
 //Los middlewares no son mas que funciones que cumplen cierta funcion para validar cosas 
 //tienen un parametro de mas que se llama next que significa que puedan pasar a la siguiente validacion 
-//Porque en las rutas las validaciones van de forma ASINCRONA 
+//Porque en las rutas las validaciones van de forma SINCRONA
 
 
 const validarJWT =async (req = request, res = response, next) => {
@@ -52,4 +52,6 @@ const validarJWT =async (req = request, res = response, next) => {
 	}
 };
 
-module.exports = validarJWT;
+module.exports = {
+	validarJWT
+}

@@ -2,7 +2,19 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 
 const { esRoleValido, emailExiste,existeUsuarioPorId} = require('../helpers/db-validators');
-const{validarCampos,validarJWT,esAdminRole,tieneRole}=require('../middlewares')
+const {
+	usuariosGet,
+	usuariosPut,
+	usuariosPost,
+	usuariosDelete,
+	usuariosPatch,
+} = require('../controllers/usuarios.controller');
+const {
+	//esAdminRole,
+    validarCampos,
+    validarJWT,
+    tieneRole
+} = require('../middlewares/index');
 //Lo que hice aca arriba fue en la carpeta middlewares sacar las funciones de las constantes que estan en index
 // que a mi me parecian lo de abajo es el antes lo de arriba es el despues 
 
@@ -13,13 +25,7 @@ const{validarCampos,validarJWT,esAdminRole,tieneRole}=require('../middlewares')
 
 const router = Router();
 
-const {
-	usuariosGet,
-	usuariosPut,
-	usuariosPost,
-	usuariosDelete,
-	usuariosPatch,
-} = require('../controllers/usuarios.controller');
+
 
 router.get('/', usuariosGet);
 
@@ -46,14 +52,17 @@ router.post(
 	usuariosPost,
 );
 
-router.delete('/:id',[
-	validarJWT,
-	tieneRole('ADMIN_ROLE','USER_ROLE'),
-	// esAdminRole, fuerza que tenga que ser admin si o si 
-	check('id','No es un ID valido').isMongoId(),
-	check('id').custom(existeUsuarioPorId),
-	validarCampos
-],usuariosDelete);
+router.delete('/:id',
+	[
+		validarJWT,
+		tieneRole('ADMIN_ROLE','USER_ROLE'),
+		// esAdminRole, fuerza que tenga que ser admin si o si 
+		check('id','No es un ID valido').isMongoId(),
+		check('id').custom(existeUsuarioPorId),
+		validarCampos
+	],
+	usuariosDelete,
+);
 
 router.patch('/', usuariosPatch);
 

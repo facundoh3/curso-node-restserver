@@ -1,13 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>futura app de angular react o lo que sea</title>
-</head>
-<body>
-    <h1>Acceso Denegado</h1>
-    <h1>Aca iria la aplicacion de angular react vue etc </h1>
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Google sign in</title>
+	</head>
+	<body>
+		<!-- ESTA ES LA LIBRERIA NUEVA DE GOOGLE SIGN IN-->
+		<h1>Google sign in</h1>
+		<h1>Aca iria la aplicacion de angular react vue etc</h1>
+		<div
+			id="g_id_onload"
+			data-client_id="61165608368-rl0pskv2bt77s5iq8o282b9o8gciesh9.apps.googleusercontent.com"
+			data-callback="handleCredentialResponse"
+		></div>
+		<script src="https://accounts.google.com/gsi/client" async defer></script>
+		<script src="jwt-decode.js" async defer></script>
+
+		<script>
+			console.log(window.location.hostname.includes('localhost'));
+			var url = window.location.hostname.includes('localhost')
+				? 'http://localhost:8080/api/auth/google'
+				: 'https://cafe-node-def.web.app/api/auth/login';
+			// console.log(url);
+
+			function handleCredentialResponse(response) {
+				// decodeJwtResponse() is a custom function defined by you
+				// to decode the credential response.
+				console.log('Encoded JWT ID token: ' + response.credential);
+
+				// console.log(jwt_decode(response.credential));
+
+				const responsePayLoad = jwt_decode(response.credential);
+
+				console.log('ID: ' + responsePayLoad.sub);
+
+				console.log('Full Name: ' + responsePayLoad.name);
+
+				console.log('Given Name: ' + responsePayLoad.given_name);
+
+				console.log('Family Name: ' + responsePayLoad.family_name);
+
+				console.log('Image URL: ' + responsePayLoad.picture);
+
+				console.log('Email: ' + responsePayLoad.email);
+
+				var id_token = response.credential;
+
+				// console.log(id_token);
+
+				const data={id_token}
+
+				fetch(url, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify(data),
+				})
+					.then((resp) => resp.json())
+					.then((data) => console.log('mi server en el cual el usuario esta haciendo un post', data))
+					.catch(console.log);
+			}
+
+			window.onload = function () {
+				google.accounts.id.initialize({
+					client_id:
+						'61165608368-rl0pskv2bt77s5iq8o282b9o8gciesh9.apps.googleusercontent.com',
+					callback: handleCredentialResponse,
+				});
+				google.accounts.id.renderButton(
+					document.getElementById('buttonDiv'),
+					{ theme: 'outline', size: 'large' }, // customization attributes
+				);
+				google.accounts.id.prompt(); // also display the One Tap dialog
+			};
+			//Peticion POST desde el frontend (Al final no me salio)
+		</script>
+		<div id="buttonDiv"></div>
+	</body>
 </html>
+<!-- <script type="module">
+	import jwtDecode from 'esm.run/jwt-decode';
+	function handleCredentialResponse(response) {
+		const responsePayLoad = jwtDecode(response.credential);
+		console.log('ID: ' + responsePayLoad.sub);
+		console.log('Full Name: ' + responsePayLoad.name);
+		console.log('Given Name: ' + responsePayLoad.given_name);
+		console.log('Family Name: ' + responsePayLoad.family_name);
+		console.log('Image URL: ' + responsePayLoad.picture);
+		console.log('Email: ' + responsePayLoad.email);
+		alert(responsePayLoad.email);
+	}
+</script> -->
