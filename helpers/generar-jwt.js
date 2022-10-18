@@ -2,7 +2,7 @@ const jwt=require('jsonwebtoken')
 //Aca puedo generar los tokens con la info que puse en las variables de entorno mas el id del usuario 
 //Que con el sign lo que hace es como que toma la contraseña "madre" y lo firma para que ese id tenga un token 
 const generarJWT=(uid='')=>{
-    return new promise((resolve,reject)=>{
+    return new Promise((resolve,reject)=>{
         
         const payload={uid}
 
@@ -18,4 +18,6 @@ const generarJWT=(uid='')=>{
         })
     })
 }
-module.exports=generarJWT
+module.exports={
+    generarJWT
+}

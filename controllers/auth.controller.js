@@ -4,7 +4,7 @@ const bcryptjs=require('bcryptjs')
 
 //IMPORTACIONES DE CARPETA EN CARPETA
 const Usuario=require('../models/usuario');
-const generarJWT = require('../helpers/generar-jwt');
+const{ generarJWT} = require('../helpers/generar-jwt');
 const { googleVerify } = require('../helpers/google-verify');
 
 
@@ -24,8 +24,8 @@ const login = async (req = request, res = response) => {
         //Si el usuario todavia esta activo en DB
 
         if(!usuario.estado){
-            res.status(400).json({
-                msg:'La cuenta se elimino porque no esta en DB'
+            return res.status(400).json({
+                msg:'Usuario/Password no son correctos borrado de la DB estado:false'
             })
         }
 
@@ -34,7 +34,7 @@ const login = async (req = request, res = response) => {
 
         const validPassword=bcryptjs.compareSync(password,usuario.password)
         if (!validPassword) {
-            res.status(400).json({
+            return res.status(400).json({
                 msg:'El password es invalido'
             })
         }
